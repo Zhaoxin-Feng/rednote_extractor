@@ -1,0 +1,13 @@
+# ============================================
+# RedExtract Pro - Python 依赖包
+# ============================================
+
+# HTTP 客户端 - 用于下载小红书图片
+httpx>=0.25.0
+
+# AWS S3 SDK - 用于上传图片到 Cloudflare R2
+boto3>=1.34.0
+botocore>=1.34.0
+
+# 可选：如果需要使用 MediaCrawler 的完整功能
+# playwright>=1.40.0  # 浏览器自动化（MediaCrawler 已经安装）

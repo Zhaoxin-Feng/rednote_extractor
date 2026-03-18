@@ -1,0 +1,18 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:github.com)",
+      "Bash(find:*)",
+      "Bash(python process_data.py:*)",
+      "Bash(open:*)",
+      "Bash(pip install:*)",
+      "Bash(python:*)",
+      "Bash(python3:*)",
+      "Bash(chmod:*)",
+      "Bash(./fetch_post.sh:*)",
+      "Bash(pip3 install:*)",
+      "Bash(.gitignore << 'EOF'\n# Python\n__pycache__/\n*.py[cod]\n*$py.class\n*.so\n.Python\nvenv/\nENV/\nenv/\n\n# MediaCrawler\nMediaCrawler/\n\n# Downloaded files\ndownloads/\n*.jsonl\n\n# User data\nuploaded_urls.txt\nurls.txt\n\n# IDE\n.vscode/\n.idea/\n*.swp\n*.swo\n\n# OS\n.DS_Store\nThumbs.db\n\n# Logs\n*.log\nEOF)",
+      "Bash(cat:*)"
+    ]
+  }
+}

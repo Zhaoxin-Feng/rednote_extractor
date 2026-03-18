@@ -1,0 +1,33 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+ENV/
+env/
+
+# MediaCrawler
+MediaCrawler/
+
+# Downloaded files
+downloads/
+*.jsonl
+
+# User data
+uploaded_urls.txt
+urls.txt
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
