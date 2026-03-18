@@ -1,20 +1,24 @@
 #!/bin/bash
 
 # ============================================
-# One-click RedNote post addition script
-# Usage: ./fetch_post.sh "RedNote link"
+# 一键添加小红书帖子脚本
+# 使用方法: ./scripts/fetch_post.sh "小红书链接"
 # ============================================
 
-set -e  # Exit immediately on error
+set -e  # 遇到错误立即退出
 
-# Color definitions
+# 切换到项目根目录（脚本所在目录的上一级）
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+cd "$SCRIPT_DIR/.."
+
+# 颜色定义
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 
-# Print functions
+# 打印函数
 print_step() {
     echo -e "${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
     echo -e "${GREEN}$1${NC}"
@@ -22,7 +26,7 @@ print_step() {
 }
 
 print_error() {
-    echo -e "${RED}❌ Error: $1${NC}"
+    echo -e "${RED}❌ 错误: $1${NC}"
 }
 
 print_success() {
@@ -33,118 +37,118 @@ print_warning() {
     echo -e "${YELLOW}⚠️  $1${NC}"
 }
 
-# Check arguments
+# 检查参数
 if [ $# -eq 0 ]; then
     echo -e "${YELLOW}"
-    echo "📖 Usage:"
-    echo "   ./fetch_post.sh \"RedNote link\""
+    echo "📖 使用方法："
+    echo "   ./fetch_post.sh \"小红书链接\""
     echo ""
-    echo "Example:"
+    echo "示例："
     echo "   ./fetch_post.sh \"https://www.xiaohongshu.com/explore/abc123...\""
     echo ""
-    echo "💡 This script will automatically:"
-    echo "   1. Update ../MediaCrawler configuration"
-    echo "   2. Run ../MediaCrawler to crawl data"
-    echo "   3. Download images and upload to R2"
-    echo "   4. Update frontend posts.json"
+    echo "💡 这个脚本会自动："
+    echo "   1. 更新 MediaCrawler 配置"
+    echo "   2. 运行 MediaCrawler 爬取数据"
+    echo "   3. 下载图片并上传到 R2"
+    echo "   4. 更新前端 posts.json"
     echo -e "${NC}"
     exit 1
 fi
 
 XHS_URL="$1"
 
-# Check ../MediaCrawler directory
-if [ ! -d "../MediaCrawler" ]; then
-    print_error "Cannot find ../MediaCrawler directory"
-    echo "Please install ../MediaCrawler first:"
-    echo "  git clone https://github.com/NanmiCoder/../MediaCrawler.git"
+# 检查 MediaCrawler 目录
+if [ ! -d "MediaCrawler" ]; then
+    print_error "找不到 MediaCrawler 目录"
+    echo "请先安装 MediaCrawler："
+    echo "  git clone https://github.com/NanmiCoder/MediaCrawler.git"
     exit 1
 fi
 
 # ============================================
-# Step 1: Update ../MediaCrawler config
+# 步骤 1: 更新 MediaCrawler 配置
 # ============================================
-print_step "Step 1/4: Update ../MediaCrawler configuration"
+print_step "步骤 1/4: 更新 MediaCrawler 配置"
 
-CONFIG_FILE="../MediaCrawler/config/xhs_config.py"
+CONFIG_FILE="MediaCrawler/config/xhs_config.py"
 
-# Backup original config
+# 备份原配置
 if [ -f "$CONFIG_FILE" ]; then
     cp "$CONFIG_FILE" "$CONFIG_FILE.backup"
-    print_success "Original config file backed up"
+    print_success "已备份原配置文件"
 fi
 
-# Create temporary config
+# 创建临时配置
 cat > "$CONFIG_FILE" << EOF
 # ============================================
-# RedNote crawler configuration (auto-generated)
+# 小红书爬虫配置 (自动生成)
 # ============================================
 
-# Specified post URL list
+# 指定帖子 URL 列表
 XHS_SPECIFIED_NOTE_URL_LIST = [
     "$XHS_URL"
 ]
 
-# Other default configurations
+# 其他默认配置
 CRAWLER_TYPE = "detail"
 EOF
 
-print_success "Config file updated"
-echo "   Link: $XHS_URL"
+print_success "配置文件已更新"
+echo "   链接: $XHS_URL"
 
 # ============================================
-# Step 2: Run ../MediaCrawler
+# 步骤 2: 运行 MediaCrawler
 # ============================================
-print_step "Step 2/4: Run ../MediaCrawler to crawl data"
+print_step "步骤 2/4: 运行 MediaCrawler 爬取数据"
 
-cd ../MediaCrawler
+cd MediaCrawler
 
-print_warning "Please scan QR code in the browser window to login (first time only)"
+print_warning "请在弹出的浏览器窗口中扫码登录（首次需要）"
 echo ""
 
-# Run ../MediaCrawler
+# 运行 MediaCrawler
 if command -v uv &> /dev/null; then
     uv run main.py --platform xhs --lt qrcode --type detail
 else
-    print_error "Cannot find uv command"
-    echo "Please install uv first: curl -LsSf https://astral.sh/uv/install.sh | sh"
+    print_error "找不到 uv 命令"
+    echo "请先安装 uv: curl -LsSf https://astral.sh/uv/install.sh | sh"
     exit 1
 fi
 
 cd ..
 
-print_success "../MediaCrawler crawling complete"
+print_success "MediaCrawler 爬取完成"
 
 # ============================================
-# Step 3: Process data and upload
+# 步骤 3: 处理数据并上传
 # ============================================
-print_step "Step 3/4: Process data and upload to R2"
+print_step "步骤 3/4: 处理数据并上传到 R2"
 
-python3 add_post.py "$XHS_URL"
+python3 scripts/add_post.py "$XHS_URL"
 
 if [ $? -eq 0 ]; then
-    print_success "Data processing complete"
+    print_success "数据处理完成"
 else
-    print_error "Data processing failed"
+    print_error "数据处理失败"
     exit 1
 fi
 
 # ============================================
-# Step 4: Complete
+# 步骤 4: 完成
 # ============================================
-print_step "🎉 All done!"
+print_step "🎉 全部完成！"
 
 echo ""
-echo -e "${GREEN}✨ New post added successfully!${NC}"
+echo -e "${GREEN}✨ 新帖子已添加成功！${NC}"
 echo ""
-echo "📝 Next steps:"
-echo "   1. Refresh browser: http://localhost:8000"
-echo "   2. Enter post link or note_id"
-echo "   3. Click 'Extract Content'"
+echo "📝 下一步："
+echo "   1. 刷新浏览器: http://localhost:8000"
+echo "   2. 输入帖子链接或 note_id"
+echo "   3. 点击「提取内容」"
 echo ""
 echo -e "${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
 
-# Restore config file
+# 恢复配置文件
 if [ -f "$CONFIG_FILE.backup" ]; then
     mv "$CONFIG_FILE.backup" "$CONFIG_FILE"
 fi

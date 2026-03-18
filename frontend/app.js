@@ -281,7 +281,21 @@ async function analyzeWithAI() {
         });
 
         if (!response.ok) {
-            throw new Error(`API 错误: ${response.status} ${response.statusText}`);
+            const errorData = await response.json().catch(() => ({}));
+            const errorMessage = errorData.error?.message || response.statusText;
+
+            // 提供更详细的错误信息
+            let userMessage = `API 错误 (${response.status}): ${errorMessage}`;
+
+            if (response.status === 403) {
+                userMessage = `❌ API 访问被拒绝 (403)\n\n可能原因：\n1. API Key 无效或格式错误\n2. 账户余额不足\n3. 所选模型不支持图片分析\n4. API Key 权限不足\n\n请检查您的 OpenRouter 账户：\n- 访问 https://openrouter.ai/keys\n- 确认 API Key 有效\n- 检查账户余额\n- 尝试使用支持 vision 的模型`;
+            } else if (response.status === 401) {
+                userMessage = '❌ API Key 无效 (401)\n\n请检查：\n1. API Key 格式是否正确（应以 sk-or-v1- 开头）\n2. 是否已在 OpenRouter 控制台创建了有效的 API Key';
+            } else if (response.status === 429) {
+                userMessage = '❌ 请求过于频繁 (429)\n\n请稍后再试，或升级您的 OpenRouter 套餐';
+            }
+
+            throw new Error(userMessage);
         }
 
         const data = await response.json();
@@ -388,6 +402,9 @@ function showNotification(message, type = 'info') {
     // Create notification element
     const notification = document.createElement('div');
     notification.className = `notification notification-${type}`;
+
+    // Support multi-line messages
+    notification.style.whiteSpace = 'pre-line';
     notification.textContent = message;
 
     // Style the notification
@@ -403,21 +420,26 @@ function showNotification(message, type = 'info') {
         borderRadius: 'var(--radius-sm)',
         boxShadow: 'var(--shadow-lg)',
         zIndex: '10000',
-        fontSize: '15px',
-        fontWeight: '600',
+        fontSize: '14px',
+        fontWeight: type === 'error' ? '500' : '600',
         animation: 'slideInRight 0.3s ease',
-        maxWidth: '400px'
+        maxWidth: '500px',
+        lineHeight: '1.6',
+        textAlign: 'left'
     });
 
     document.body.appendChild(notification);
 
-    // Remove after 3 seconds
+    // Remove after duration (longer for errors)
+    const duration = type === 'error' ? 8000 : 3000;
     setTimeout(() => {
         notification.style.animation = 'slideOutRight 0.3s ease';
         setTimeout(() => {
-            document.body.removeChild(notification);
+            if (document.body.contains(notification)) {
+                document.body.removeChild(notification);
+            }
         }, 300);
-    }, 3000);
+    }, duration);
 }
 
 // ==========================================

@@ -1,20 +1,24 @@
 #!/bin/bash
 
 # ============================================
-# Batch add RedNote posts script
-# Usage: ./fetch_posts_batch.sh urls.txt
-# urls.txt format: One RedNote link per line
+# 批量添加小红书帖子脚本
+# 用法: ./scripts/fetch_posts_batch.sh urls.txt
+# urls.txt 格式: 每行一个小红书链接
 # ============================================
 
-set -e  # Exit immediately on error
+set -e  # 遇到错误立即退出
 
-# Check arguments
+# 切换到项目根目录（脚本所在目录的上一级）
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+cd "$SCRIPT_DIR/.."
+
+# 检查参数
 if [ $# -eq 0 ]; then
-    echo "❌ Error: Please provide file path containing URLs"
+    echo "❌ 错误: 请提供包含 URL 的文件路径"
     echo ""
-    echo "Usage: ./fetch_posts_batch.sh urls.txt"
+    echo "用法: ./fetch_posts_batch.sh urls.txt"
     echo ""
-    echo "urls.txt format example:"
+    echo "urls.txt 格式示例:"
     echo "  https://www.xiaohongshu.com/discovery/item/68f3694c00000000070364a9"
     echo "  https://www.xiaohongshu.com/discovery/item/68f47b9e0000000007000b06"
     echo "  ..."
@@ -23,55 +27,52 @@ fi
 
 URL_FILE="$1"
 
-# Check if file exists
+# 检查文件是否存在
 if [ ! -f "$URL_FILE" ]; then
-    echo "❌ Error: File does not exist: $URL_FILE"
+    echo "❌ 错误: 文件不存在: $URL_FILE"
     exit 1
 fi
 
-# Read all URLs
-echo "📖 Reading URL list..."
-mapfile -t URLS < "$URL_FILE"
-
-# Filter empty lines
+# 读取所有 URL (兼容 macOS bash 3.x)
+echo "📖 读取 URL 列表..."
 FILTERED_URLS=()
-for url in "${URLS[@]}"; do
-    # Remove whitespace
+while IFS= read -r url || [ -n "$url" ]; do
+    # 去除空白字符
     url=$(echo "$url" | xargs)
-    # Skip empty lines and comment lines
+    # 跳过空行和注释行
     if [ -n "$url" ] && [[ ! "$url" =~ ^# ]]; then
         FILTERED_URLS+=("$url")
     fi
-done
+done < "$URL_FILE"
 
 URL_COUNT=${#FILTERED_URLS[@]}
 
 if [ $URL_COUNT -eq 0 ]; then
-    echo "❌ Error: No valid URLs in file"
+    echo "❌ 错误: 文件中没有有效的 URL"
     exit 1
 fi
 
-echo "✅ Found $URL_COUNT post links"
+echo "✅ 找到 $URL_COUNT 个帖子链接"
 echo ""
 
-# Display URLs to be processed
-echo "📋 Posts to be processed:"
+# 显示将要处理的 URL
+echo "📋 将要处理的帖子:"
 for i in "${!FILTERED_URLS[@]}"; do
     echo "  $((i+1)). ${FILTERED_URLS[$i]}"
 done
 echo ""
 
-# Config file path
-CONFIG_FILE="../MediaCrawler/config/base_config.py"
+# 配置文件路径 (修改为 xhs_config.py，避免覆盖整个 base_config.py)
+CONFIG_FILE="MediaCrawler/config/xhs_config.py"
 
-# Backup original config
-if [ ! -f "${CONFIG_FILE}.backup" ]; then
-    echo "💾 Backing up original configuration..."
-    cp "$CONFIG_FILE" "${CONFIG_FILE}.backup"
+# 备份原配置
+if [ -f "$CONFIG_FILE" ]; then
+    cp "$CONFIG_FILE" "$CONFIG_FILE.backup"
+    echo "💾 已备份原配置文件"
 fi
 
-# Generate Python list format URL config
-echo "⚙️  Updating ../MediaCrawler configuration..."
+# 生成 Python 列表格式的 URL 配置
+echo "⚙️  更新 MediaCrawler 配置..."
 URL_LIST="["
 for i in "${!FILTERED_URLS[@]}"; do
     URL_LIST+="\"${FILTERED_URLS[$i]}\""
@@ -81,44 +82,37 @@ for i in "${!FILTERED_URLS[@]}"; do
 done
 URL_LIST+="]"
 
-# Update config file
+# 更新配置文件 (只修改 xhs_config.py)
 cat > "$CONFIG_FILE" << EOF
-# -*- coding: utf-8 -*-
+# ============================================
+# 小红书爬虫配置 (批量处理 - 自动生成)
+# ============================================
 
-# Platform configuration
-PLATFORM = "xhs"
-KEYWORDS = ""
-LOGIN_TYPE = "qrcode"
-CRAWLER_TYPE = "detail"
-
-# RedNote specified note URL list (batch processing)
+# 指定帖子 URL 列表
 XHS_SPECIFIED_NOTE_URL_LIST = $URL_LIST
 
-# Other configurations remain default
-CRAWLER_MAX_NOTES_COUNT = 100
-ENABLE_GET_COMMENTS = False
-ENABLE_GET_SUB_COMMENTS = False
-SAVE_DATA_OPTION = "json"
+# 其他默认配置
+CRAWLER_TYPE = "detail"
 EOF
 
-echo "✅ Configuration updated with $URL_COUNT post links"
+echo "✅ 配置已更新，包含 $URL_COUNT 个帖子链接"
 echo ""
 
-# Run ../MediaCrawler (only need to scan QR code once!)
-echo "🚀 Starting ../MediaCrawler..."
-echo "⚠️  If QR code appears, please scan to login (only once needed)"
+# 运行 MediaCrawler（只需要扫码一次！）
+echo "🚀 启动 MediaCrawler..."
+echo "⚠️  如果弹出二维码，请扫码登录（只需要扫一次）"
 echo ""
 
-cd ../MediaCrawler
+cd MediaCrawler
 uv run main.py --platform xhs --lt qrcode --type detail
 cd ..
 
 echo ""
-echo "✅ ../MediaCrawler crawling complete"
+echo "✅ MediaCrawler 爬取完成"
 echo ""
 
-# Process each post sequentially
-echo "📦 Starting to process post data..."
+# 依次处理每个帖子
+echo "📦 开始处理帖子数据..."
 echo ""
 
 SUCCESS_COUNT=0
@@ -127,37 +121,39 @@ FAILED_URLS=()
 
 for i in "${!FILTERED_URLS[@]}"; do
     url="${FILTERED_URLS[$i]}"
-    echo "[$((i+1))/$URL_COUNT] Processing: $url"
+    echo "[$((i+1))/$URL_COUNT] 处理: $url"
 
-    if python3 add_post.py "$url"; then
-        echo "✅ Success"
+    if python3 scripts/add_post.py "$url"; then
+        echo "✅ 成功"
         SUCCESS_COUNT=$((SUCCESS_COUNT + 1))
     else
-        echo "❌ Failed"
+        echo "❌ 失败"
         FAIL_COUNT=$((FAIL_COUNT + 1))
         FAILED_URLS+=("$url")
     fi
     echo ""
 done
 
-# Restore original config
-echo "🔄 Restoring original configuration..."
-mv "${CONFIG_FILE}.backup" "$CONFIG_FILE"
+# 恢复原配置
+echo "🔄 恢复原始配置..."
+if [ -f "$CONFIG_FILE.backup" ]; then
+    mv "$CONFIG_FILE.backup" "$CONFIG_FILE"
+fi
 
 echo ""
 echo "========================================="
-echo "📊 Batch processing complete"
+echo "📊 批量处理完成"
 echo "========================================="
-echo "✅ Success: $SUCCESS_COUNT"
+echo "✅ 成功: $SUCCESS_COUNT"
 if [ $FAIL_COUNT -gt 0 ]; then
-    echo "❌ Failed: $FAIL_COUNT"
+    echo "❌ 失败: $FAIL_COUNT"
     echo ""
-    echo "Failed URLs:"
+    echo "失败的 URL:"
     for url in "${FAILED_URLS[@]}"; do
         echo "  - $url"
     done
 fi
 echo "========================================="
 echo ""
-echo "🎉 All posts added to frontend!"
-echo "🌐 Visit: http://localhost:8000"
+echo "🎉 所有帖子已添加到前端！"
+echo "🌐 访问: http://localhost:8000"

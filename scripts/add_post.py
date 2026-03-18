@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-Automated RedNote post addition script
-One-click completion: Crawl → Upload to R2 → Update frontend
+自动化添加小红书帖子脚本
+一键完成：爬取 → 上传 R2 → 更新前端
 """
 
 import sys
@@ -16,7 +16,7 @@ from datetime import datetime
 
 
 # ============================================
-# R2 Configuration (Auto-filled)
+# R2 配置（自动填写）
 # ============================================
 R2_ACCESS_KEY_ID = "3aa9a60a838e3424ec5cbb9a605a1c47"
 R2_SECRET_ACCESS_KEY = "7c567a1ed64185059c5c1e6da5ba8be79d77cdd6b48c47f0f61fc3faf3c269eb"
@@ -26,7 +26,7 @@ PUBLIC_URL_PREFIX = "https://pub-91c19942a97440f2b22cdc57caa6d4d8.r2.dev"
 
 
 def extract_note_id(url):
-    """Extract note_id from URL"""
+    """从 URL 中提取 note_id"""
     match = re.search(r'/(?:explore|discovery/item)/([a-f0-9]+)', url)
     if match:
         return match.group(1)
@@ -36,8 +36,8 @@ def extract_note_id(url):
 
 
 def find_latest_jsonl():
-    """Find the latest MediaCrawler data file"""
-    jsonl_dir = Path("../MediaCrawler/data/xhs/jsonl")
+    """查找最新的 MediaCrawler 数据文件"""
+    jsonl_dir = Path("MediaCrawler/data/xhs/jsonl")
     if not jsonl_dir.exists():
         return None
 
@@ -45,12 +45,12 @@ def find_latest_jsonl():
     if not content_files:
         return None
 
-    # Return the latest file
+    # 返回最新的文件
     return max(content_files, key=lambda p: p.stat().st_mtime)
 
 
 def read_post_from_jsonl(jsonl_file, note_id):
-    """Read specified post from JSONL file"""
+    """从 JSONL 文件中读取指定帖子"""
     with open(jsonl_file, 'r', encoding='utf-8') as f:
         for line in f:
             post = json.loads(line.strip())
@@ -60,7 +60,7 @@ def read_post_from_jsonl(jsonl_file, note_id):
 
 
 def download_images(image_urls, note_id, save_dir="downloads"):
-    """Download images to local"""
+    """下载图片到本地"""
     note_dir = Path(save_dir) / note_id
     note_dir.mkdir(parents=True, exist_ok=True)
 
@@ -74,7 +74,7 @@ def download_images(image_urls, note_id, save_dir="downloads"):
     with httpx.Client(headers=headers, timeout=30.0, follow_redirects=True) as client:
         for i, img_url in enumerate(image_urls, 1):
             try:
-                print(f"  Downloading image {i}/{len(image_urls)}...", end=" ")
+                print(f"  下载图片 {i}/{len(image_urls)}...", end=" ")
                 resp = client.get(img_url)
                 resp.raise_for_status()
 
@@ -92,7 +92,7 @@ def download_images(image_urls, note_id, save_dir="downloads"):
 
 
 def upload_to_r2(local_files, note_id):
-    """Upload images to R2"""
+    """上传图片到 R2"""
     s3_client = boto3.client(
         's3',
         endpoint_url=R2_ENDPOINT_URL,
@@ -121,92 +121,92 @@ def upload_to_r2(local_files, note_id):
 
             public_url = f"{PUBLIC_URL_PREFIX}/{r2_key}"
             uploaded_urls.append(public_url)
-            print(f"  Upload {local_file.name} ✓")
+            print(f"  上传 {local_file.name} ✓")
 
         except Exception as e:
-            print(f"  Upload {local_file.name} ✗ ({e})")
+            print(f"  上传 {local_file.name} ✗ ({e})")
 
     return uploaded_urls
 
 
-def update_posts_json(post_data, frontend_dir="../frontend"):
-    """Update frontend/posts.json"""
+def update_posts_json(post_data, frontend_dir="frontend"):
+    """更新 frontend/posts.json"""
     posts_file = Path(frontend_dir) / "posts.json"
 
-    # Read existing data
+    # 读取现有数据
     if posts_file.exists():
         with open(posts_file, 'r', encoding='utf-8') as f:
             posts = json.load(f)
     else:
         posts = {}
 
-    # Add new post
+    # 添加新帖子
     note_id = post_data['note_id']
     posts[note_id] = post_data
 
-    # Save
+    # 保存
     with open(posts_file, 'w', encoding='utf-8') as f:
         json.dump(posts, f, ensure_ascii=False, indent=2)
 
-    print(f"\n✅ Updated {posts_file}")
-    print(f"   Currently {len(posts)} posts in total")
+    print(f"\n✅ 已更新 {posts_file}")
+    print(f"   当前共有 {len(posts)} 个帖子")
 
 
 def process_post(note_id_or_url):
-    """Complete workflow for processing a single post"""
+    """处理单个帖子的完整流程"""
     print("="*60)
-    print("🚀 Starting to process RedNote post")
+    print("🚀 开始处理小红书帖子")
     print("="*60)
 
-    # 1. Extract note_id
+    # 1. 提取 note_id
     note_id = extract_note_id(note_id_or_url)
     if not note_id:
-        print(f"❌ Error: Unrecognizable link format: {note_id_or_url}")
+        print(f"❌ 错误：无法识别的链接格式: {note_id_or_url}")
         return False
 
     print(f"\n📝 Note ID: {note_id}")
 
-    # 2. Find MediaCrawler data
-    print("\n🔍 Step 1: Finding MediaCrawler data...")
+    # 2. 查找 MediaCrawler 数据
+    print("\n🔍 步骤 1: 查找 MediaCrawler 数据...")
     jsonl_file = find_latest_jsonl()
 
     if not jsonl_file:
-        print("❌ Error: Cannot find MediaCrawler data file")
-        print("\n💡 Please run MediaCrawler to crawl the post first:")
+        print("❌ 错误：找不到 MediaCrawler 数据文件")
+        print("\n💡 请先运行 MediaCrawler 爬取帖子：")
         print("   1. cd MediaCrawler")
-        print("   2. Edit config/xhs_config.py, add the link")
+        print("   2. 编辑 config/xhs_config.py，添加链接")
         print("   3. uv run main.py --platform xhs --lt qrcode --type detail")
         return False
 
-    print(f"   Found data file: {jsonl_file.name}")
+    print(f"   找到数据文件: {jsonl_file.name}")
 
-    # 3. Read post data
+    # 3. 读取帖子数据
     post = read_post_from_jsonl(jsonl_file, note_id)
     if not post:
-        print(f"❌ Error: Cannot find note_id in data file: {note_id}")
-        print("\n💡 Please make sure you've crawled this post with MediaCrawler")
+        print(f"❌ 错误：在数据文件中找不到 note_id: {note_id}")
+        print("\n💡 请确保已用 MediaCrawler 爬取了这个帖子")
         return False
 
-    print(f"   Title: {post.get('title', 'N/A')}")
+    print(f"   标题: {post.get('title', 'N/A')}")
 
-    # 4. Process image URLs
-    print("\n📥 Step 2: Downloading images...")
+    # 4. 处理图片 URL
+    print("\n📥 步骤 2: 下载图片...")
     image_list_str = post.get('image_list', '')
     image_urls = [url.strip() for url in image_list_str.split(',') if url.strip()]
 
     if not image_urls:
-        print("⚠️  Warning: This post has no images")
+        print("⚠️  警告：这个帖子没有图片")
         image_urls = []
     else:
-        print(f"   Found {len(image_urls)} images")
+        print(f"   找到 {len(image_urls)} 张图片")
         downloaded_files = download_images(image_urls, note_id)
 
-        # 5. Upload to R2
-        print(f"\n☁️  Step 3: Uploading to Cloudflare R2...")
+        # 5. 上传到 R2
+        print(f"\n☁️  步骤 3: 上传到 Cloudflare R2...")
         r2_urls = upload_to_r2(downloaded_files, note_id)
 
-    # 6. Prepare frontend data
-    print("\n📝 Step 4: Updating frontend data...")
+    # 6. 准备前端数据
+    print("\n📝 步骤 4: 更新前端数据...")
     frontend_data = {
         'note_id': note_id,
         'title': post.get('title', ''),
@@ -221,40 +221,40 @@ def process_post(note_id_or_url):
         'images': r2_urls if image_urls else []
     }
 
-    # 7. Update posts.json
+    # 7. 更新 posts.json
     update_posts_json(frontend_data)
 
-    # 8. Complete
+    # 8. 完成
     print("\n" + "="*60)
-    print("🎉 Processing complete!")
+    print("🎉 处理完成！")
     print("="*60)
-    print(f"\n📊 Post information:")
-    print(f"   Title: {frontend_data['title']}")
-    print(f"   Author: {frontend_data['nickname']}")
-    print(f"   Images: {len(frontend_data['images'])} images")
-    print(f"   Likes: {frontend_data['liked_count']}")
+    print(f"\n📊 帖子信息：")
+    print(f"   标题: {frontend_data['title']}")
+    print(f"   作者: {frontend_data['nickname']}")
+    print(f"   图片: {len(frontend_data['images'])} 张")
+    print(f"   点赞: {frontend_data['liked_count']}")
 
     if frontend_data['images']:
-        print(f"\n🎨 First image URL:")
+        print(f"\n🎨 第一张图片 URL：")
         print(f"   {frontend_data['images'][0]}")
 
-    print(f"\n💡 Next steps:")
-    print(f"   1. Refresh browser: http://localhost:8000")
-    print(f"   2. Enter link or note_id: {note_id}")
-    print(f"   3. Click 'Extract Content'")
+    print(f"\n💡 下一步：")
+    print(f"   1. 刷新浏览器: http://localhost:8000")
+    print(f"   2. 输入链接或 note_id: {note_id}")
+    print(f"   3. 点击「提取内容」")
 
     return True
 
 
 def main():
     if len(sys.argv) < 2:
-        print("📖 Usage:")
-        print("   python add_post.py <RedNote link or note_id>")
-        print("\nExamples:")
+        print("📖 使用方法：")
+        print("   python add_post.py <小红书链接或note_id>")
+        print("\n示例：")
         print("   python add_post.py 'https://www.xiaohongshu.com/explore/abc123...'")
         print("   python add_post.py 'abc123...'")
-        print("\n⚠️  Note:")
-        print("   Please crawl the post with MediaCrawler first, then run this script to process data")
+        print("\n⚠️  注意：")
+        print("   请先用 MediaCrawler 爬取帖子，然后运行本脚本处理数据")
         sys.exit(1)
 
     note_id_or_url = sys.argv[1]

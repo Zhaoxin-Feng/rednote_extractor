@@ -72,5 +72,79 @@
       "https://pub-91c19942a97440f2b22cdc57caa6d4d8.r2.dev/68f47b9e0000000007000b06/68f47b9e0000000007000b06_24.jpg",
       "https://pub-91c19942a97440f2b22cdc57caa6d4d8.r2.dev/68f47b9e0000000007000b06/68f47b9e0000000007000b06_25.jpg"
     ]
+  },
+  "69b798da000000002300484d": {
+    "note_id": "69b798da000000002300484d",
+    "title": "Agent Memory Benchmark 小记",
+    "desc": "从 记忆能力\n走向 记忆价值\n\t\nA 记住没 （Dialogue 任务为主）\n\t\n│\n\t\n├ LoCoMo\n\t\n├ LongMemEval\n\t\n├ REALTALK\n\t\n├ MemoryAgentBench\n\t\n├ HaluMem\n\t\n└ Mem-Gallery\n\t\nB 记的有用吗（基于下游任务）\n\t\n│\n\t\n├ TwinVoice （Digital Twin 人格模拟、AI分身）\n\t\n├ MemoryArena\n\t\n├ MemGUI-Bench （GUI Agent）\n\t\n├ DeepResearchBench （Deep Research Agent）\n\t\n└ AMA-Bench\n\t\n#大模型[话题]# #AIAgent[话题]# #Agent[话题]# #Benchmark[话题]# #LLM[话题]#",
+    "nickname": "Agent Tracer",
+    "avatar": "https://sns-avatar-qc.xhscdn.com/avatar/1040g2jo31q8uoghono005p9p1vi38pfua9qj5so",
+    "time": "2026-03-16",
+    "liked_count": "200",
+    "collected_count": "286",
+    "comment_count": "6",
+    "share_count": "77",
+    "images": [
+      "https://pub-91c19942a97440f2b22cdc57caa6d4d8.r2.dev/69b798da000000002300484d/69b798da000000002300484d_1.jpg",
+      "https://pub-91c19942a97440f2b22cdc57caa6d4d8.r2.dev/69b798da000000002300484d/69b798da000000002300484d_2.jpg",
+      "https://pub-91c19942a97440f2b22cdc57caa6d4d8.r2.dev/69b798da000000002300484d/69b798da000000002300484d_3.jpg",
+      "https://pub-91c19942a97440f2b22cdc57caa6d4d8.r2.dev/69b798da000000002300484d/69b798da000000002300484d_4.jpg",
+      "https://pub-91c19942a97440f2b22cdc57caa6d4d8.r2.dev/69b798da000000002300484d/69b798da000000002300484d_5.jpg",
+      "https://pub-91c19942a97440f2b22cdc57caa6d4d8.r2.dev/69b798da000000002300484d/69b798da000000002300484d_6.jpg",
+      "https://pub-91c19942a97440f2b22cdc57caa6d4d8.r2.dev/69b798da000000002300484d/69b798da000000002300484d_7.jpg",
+      "https://pub-91c19942a97440f2b22cdc57caa6d4d8.r2.dev/69b798da000000002300484d/69b798da000000002300484d_8.jpg",
+      "https://pub-91c19942a97440f2b22cdc57caa6d4d8.r2.dev/69b798da000000002300484d/69b798da000000002300484d_9.jpg",
+      "https://pub-91c19942a97440f2b22cdc57caa6d4d8.r2.dev/69b798da000000002300484d/69b798da000000002300484d_10.jpg",
+      "https://pub-91c19942a97440f2b22cdc57caa6d4d8.r2.dev/69b798da000000002300484d/69b798da000000002300484d_11.jpg",
+      "https://pub-91c19942a97440f2b22cdc57caa6d4d8.r2.dev/69b798da000000002300484d/69b798da000000002300484d_12.jpg",
+      "https://pub-91c19942a97440f2b22cdc57caa6d4d8.r2.dev/69b798da000000002300484d/69b798da000000002300484d_13.jpg"
+    ]
+  },
+  "68c6e5e0000000001c03d8fb": {
+    "note_id": "68c6e5e0000000001c03d8fb",
+    "title": "讨论了两小时大模型记忆",
+    "desc": "花了一周时间把各种llm memory论文做了一个尽可能全面的梳理，在公司做了一次俩小时的分享。\n感觉过两周还要给组里面再讲一次。\n\t\n或许有人想看吗？目录在p4，想看我搬运一下，把讲稿分享出来。\n---\n更新1-前菜-你研究的是什么memory？模型记忆与产品记忆\n更新2-前菜-能动性需要memory。作为基本能力的记忆。\n更新3-主菜-memory先验知识汇总，神经科学阐释与历史沿革梳理。\n更新3.1-主菜-模型记忆-来点机制可解释性，关于transformer的语义记忆和ICL情景记忆探讨。\n更新3.2-主菜-模型记忆-自由能原理与世界模型，memory是一种世界模型的组成，是环境的cache\n更新3.3-主菜-模型记忆-核心划分维度：长期-短期，显式-隐式\n更新4-产品记忆三板斧：获取-组织-利用\n更新4.1-Memory≠RAG，以三篇代表性经典论文为例\n更新4.2-Agent memory与过程性记忆，探讨何为“经验”\n更新5-讨论与未来方向 关于研究方向的探讨和推荐阅读材料补充\n#大模型记忆[话题]# #memory[话题]# #llm[话题]# #LLM[话题]# #记忆机制[话题]# #agent[话题]# #莱美露滋[话题]#",
+    "nickname": "liusc",
+    "avatar": "https://sns-avatar-qc.xhscdn.com/avatar/1040g2jo31kilon6o2g0g5npbrhrgbr9kagkn378",
+    "time": "2025-09-14",
+    "liked_count": "1452",
+    "collected_count": "1513",
+    "comment_count": "264",
+    "share_count": "168",
+    "images": [
+      "https://pub-91c19942a97440f2b22cdc57caa6d4d8.r2.dev/68c6e5e0000000001c03d8fb/68c6e5e0000000001c03d8fb_1.jpg",
+      "https://pub-91c19942a97440f2b22cdc57caa6d4d8.r2.dev/68c6e5e0000000001c03d8fb/68c6e5e0000000001c03d8fb_2.jpg",
+      "https://pub-91c19942a97440f2b22cdc57caa6d4d8.r2.dev/68c6e5e0000000001c03d8fb/68c6e5e0000000001c03d8fb_3.jpg",
+      "https://pub-91c19942a97440f2b22cdc57caa6d4d8.r2.dev/68c6e5e0000000001c03d8fb/68c6e5e0000000001c03d8fb_4.jpg",
+      "https://pub-91c19942a97440f2b22cdc57caa6d4d8.r2.dev/68c6e5e0000000001c03d8fb/68c6e5e0000000001c03d8fb_5.jpg",
+      "https://pub-91c19942a97440f2b22cdc57caa6d4d8.r2.dev/68c6e5e0000000001c03d8fb/68c6e5e0000000001c03d8fb_6.jpg",
+      "https://pub-91c19942a97440f2b22cdc57caa6d4d8.r2.dev/68c6e5e0000000001c03d8fb/68c6e5e0000000001c03d8fb_7.jpg"
+    ]
+  },
+  "6994968100000000150205b9": {
+    "note_id": "6994968100000000150205b9",
+    "title": "怎么不算霸道Agent Memory爱上我",
+    "desc": "新年快乐大家！rebuttal的时候什么都是有意思的（又想吐槽遇到小同行reviewer……），同时实在不想看论文，想起来前两天被朋友撺掇发的这个《3个月出10篇memory综述的AI圈🤯》，还挺有意思的\n我只看了这两个月左右的工作，基本按online的时间来看的，不一定全哈，没有比较的意思只是感慨一下\n还是想感慨上手的时候想到🔥没想到这么🔥\n实话实说这是个有趣的方向，但很多工作可能不太有趣。门槛低确实太容易水了，硬骨头问题又是公认的难大家都啃不下来，大多工作只能摘low fruit，比如很多故事性极强的纯factual memory的工作已经看得我审美疲劳了（为拖更找借口）\n但新的一年总要有点奔头！希望今年能做出自己能觉得 simple & general & scalable 的工作，也希望能在这个方向看到更多有意思的产出。我总觉得Memory是一个任何阶段的模型都需要具备的能力，ta的境况和前景不应该止步于此，总会有更有趣的方向等待挖掘，总希望这个方向的最终形态能有一点点我的贡献，“功成必定有我”这种有点中二又热血的愿景放在做研究上也蛮合适的（笑）\n新年也㊗️大家论文多多产出多多！🐴年事事顺利！[喝奶茶R][喝奶茶R]\n#大模型[话题]# #人工智能[话题]# #LLM[话题]# #agent[话题]##agentmemory[话题]# #智能体[话题]#",
+    "nickname": "WhyWait",
+    "avatar": "https://sns-avatar-qc.xhscdn.com/avatar/1040g2jo31kvhrs5i32d05q390omnnujalvnjas0",
+    "time": "2026-02-18",
+    "liked_count": "204",
+    "collected_count": "209",
+    "comment_count": "9",
+    "share_count": "108",
+    "images": [
+      "https://pub-91c19942a97440f2b22cdc57caa6d4d8.r2.dev/6994968100000000150205b9/6994968100000000150205b9_1.jpg",
+      "https://pub-91c19942a97440f2b22cdc57caa6d4d8.r2.dev/6994968100000000150205b9/6994968100000000150205b9_2.jpg",
+      "https://pub-91c19942a97440f2b22cdc57caa6d4d8.r2.dev/6994968100000000150205b9/6994968100000000150205b9_3.jpg",
+      "https://pub-91c19942a97440f2b22cdc57caa6d4d8.r2.dev/6994968100000000150205b9/6994968100000000150205b9_4.jpg",
+      "https://pub-91c19942a97440f2b22cdc57caa6d4d8.r2.dev/6994968100000000150205b9/6994968100000000150205b9_5.jpg",
+      "https://pub-91c19942a97440f2b22cdc57caa6d4d8.r2.dev/6994968100000000150205b9/6994968100000000150205b9_6.jpg",
+      "https://pub-91c19942a97440f2b22cdc57caa6d4d8.r2.dev/6994968100000000150205b9/6994968100000000150205b9_7.jpg",
+      "https://pub-91c19942a97440f2b22cdc57caa6d4d8.r2.dev/6994968100000000150205b9/6994968100000000150205b9_8.jpg",
+      "https://pub-91c19942a97440f2b22cdc57caa6d4d8.r2.dev/6994968100000000150205b9/6994968100000000150205b9_9.jpg",
+      "https://pub-91c19942a97440f2b22cdc57caa6d4d8.r2.dev/6994968100000000150205b9/6994968100000000150205b9_10.jpg",
+      "https://pub-91c19942a97440f2b22cdc57caa6d4d8.r2.dev/6994968100000000150205b9/6994968100000000150205b9_11.jpg",
+      "https://pub-91c19942a97440f2b22cdc57caa6d4d8.r2.dev/6994968100000000150205b9/6994968100000000150205b9_12.jpg"
+    ]
   }
 }
